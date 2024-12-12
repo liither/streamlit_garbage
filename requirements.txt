@@ -1,6 +1,4 @@
-numpy==2.0.2
-pandas==2.2.3
 streamlit
-pickle
-scikit-learn
-pip==22.2.2
+tensorflow==2.12.0
+numpy==1.24.0
+Pillow
