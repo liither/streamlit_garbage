@@ -7,7 +7,7 @@
 import tensorflow as tf
 
 # Load your Keras model
-model = tf.keras.models.load_model("garbage_classification_model.h5")
+model = tf.keras.models.load_model(r"C:\Users\MSI BRAVO 15\Downloads\garbage_classification_model.h5")
 
 # Convert the model to TensorFlow Lite
 converter = tf.lite.TFLiteConverter.from_keras_model(model)
