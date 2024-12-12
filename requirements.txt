@@ -1,0 +1,6 @@
+numpy==2.0.2
+pandas==2.2.3
+streamlit
+pickle
+scikit-learn
+pip==22.2.2
