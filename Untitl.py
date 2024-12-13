@@ -270,7 +270,7 @@ model.summary()
 validation_loss, validation_accuracy = model.evaluate(
     validation_generator,  
     steps=validation_generator.samples // validation_generator.batch_size  
-
+)
 print(f"Validation Loss: {validation_loss}")
 print(f"Validation Accuracy: {validation_accuracy * 100:.2f}%")
 
