@@ -15,7 +15,6 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from sklearn.preprocessing import LabelEncoder
-from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
 
 
