@@ -25,7 +25,7 @@ import os
 import random
 import shutil
 
-base_dir = "garbage_classification"
+base_dir = "./garbage_classification"
 output_dir = r"C:\Users\MSI BRAVO 15\Downloads\garbage_classification_500"
 
 os.makedirs(output_dir, exist_ok=True)
