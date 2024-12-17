@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import os
 import streamlit as st
 from PIL import Image
 import tensorflow as tf
 import numpy as np
+
+# Disable GPU if needed to prevent CUDA issues
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # Class names for prediction
 CLASS_NAMES = [
@@ -31,6 +35,7 @@ def load_trained_model():
     """
     model_path = "mobilenetv2_finetuned.h5"
     model = tf.keras.models.load_model(model_path)
+    model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])  # Compile model
     return model
 
 # Function to predict the class of an image
@@ -54,7 +59,7 @@ uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "p
 if uploaded_file:
     # Preprocess the uploaded image
     image = preprocess_image(uploaded_file)
-    st.image(Image.open(uploaded_file), caption="Uploaded Image", use_column_width=True)
+    st.image(Image.open(uploaded_file), caption="Uploaded Image", use_container_width=True)
 
     # Load the trained model
     model = load_trained_model()
