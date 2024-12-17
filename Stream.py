@@ -2,19 +2,14 @@ import streamlit as st
 import tensorflow as tf
 import numpy as np
 from PIL import Image
-import os
 
 # Title of the application
 st.title("Image Classification for Waste Categories")
 
 # Load the TFLite model
-@st.cache_resource
+@st.cache(allow_output_mutation=True)
 def load_tflite_model():
-    model_path = "model_quantized.tflite"
-    if not os.path.isfile(model_path):
-        st.error("Error: Model file 'model_quantized.tflite' not found. Please upload or check the path.")
-        st.stop()
-    interpreter = tf.lite.Interpreter(model_path=model_path)
+    interpreter = tf.lite.Interpreter(model_path="model_quantized.tflite")  # Path to your TFLite model
     interpreter.allocate_tensors()
     return interpreter
 
@@ -49,7 +44,7 @@ uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png
 if uploaded_file is not None:
     # Load and display the image
     image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Image", use_container_width=True)
+    st.image(image, caption="Uploaded Image", use_column_width=True)
     
     # Preprocess the image
     processed_image = preprocess_image(image)
