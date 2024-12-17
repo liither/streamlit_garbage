@@ -7,9 +7,6 @@ from PIL import Image
 import tensorflow as tf
 import numpy as np
 
-# Disable GPU if needed to prevent CUDA issues
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-
 # Class names for prediction
 CLASS_NAMES = [
     "battery", "biological", "brown-glass", "cardboard", "clothes",
