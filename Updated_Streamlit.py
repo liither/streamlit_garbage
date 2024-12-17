@@ -20,10 +20,11 @@ CLASS_NAMES = [
 def preprocess_image(uploaded_file):
     """
     Preprocess the uploaded image for prediction.
-    Resize the image to (150, 150) and normalize pixel values to [-1, 1].
+    Resize the image to (224, 224) and normalize pixel values to [-1, 1].
     """
     image = Image.open(uploaded_file)
-    image = image.resize((150, 150))  # Match the model input size
+    image = image.resize((224, 224))  # Match the model input size
+    image = image.convert("RGB")  # Ensure 3 channels (no alpha channel)
     image_array = np.array(image) / 127.5 - 1.0  # Normalize to [-1, 1]
     return image_array
 
@@ -42,16 +43,7 @@ def predict_class(model, image_array):
     """
     Predict the class of the image using the trained model.
     """
-    st.write(f"Image shape before expansion: {image_array.shape}")  # Debugging
-
-    # Ensure the image shape is (150, 150, 3)
-    if image_array.shape != (150, 150, 3):
-        raise ValueError(f"Invalid input shape: {image_array.shape}. Expected (150, 150, 3).")
-
     image_array = np.expand_dims(image_array, axis=0)  # Add batch dimension
-    st.write(f"Image shape after expansion: {image_array.shape}")  # Debugging
-
-    # Predict the class
     predictions = model.predict(image_array)
     predicted_index = np.argmax(predictions)
     return CLASS_NAMES[predicted_index]
@@ -71,9 +63,8 @@ if uploaded_file:
     # Load the trained model
     model = load_trained_model()
 
-    try:
-        # Predict the class
-        prediction = predict_class(model, image)
-        st.write(f"### Predicted Class: **{prediction}**")
-    except ValueError as e:
-        st.error(f"Error: {e}")
+    # Predict the class
+    prediction = predict_class(model, image)
+
+    # Display the prediction result
+    st.write(f"### Predicted Class: **{prediction}**")
