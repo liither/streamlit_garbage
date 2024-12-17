@@ -7,6 +7,9 @@ from PIL import Image
 import tensorflow as tf
 import numpy as np
 
+# Disable GPU if needed to prevent CUDA issues
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 # Class names for prediction
 CLASS_NAMES = [
     "battery", "biological", "brown-glass", "cardboard", "clothes",
@@ -17,10 +20,10 @@ CLASS_NAMES = [
 def preprocess_image(uploaded_file):
     """
     Preprocess the uploaded image for prediction.
-    Resize the image to (224, 224) and normalize pixel values to [-1, 1].
+    Resize the image to (150, 150) and normalize pixel values to [-1, 1].
     """
     image = Image.open(uploaded_file)
-    image = image.resize((224, 224))  # Resize to match the model input
+    image = image.resize((150, 150))  # Match the model input size
     image_array = np.array(image) / 127.5 - 1.0  # Normalize to [-1, 1]
     return image_array
 
@@ -42,8 +45,7 @@ def predict_class(model, image_array):
     image_array = np.expand_dims(image_array, axis=0)  # Add batch dimension
     predictions = model.predict(image_array)
     predicted_index = np.argmax(predictions)  # Find the class with the highest probability
-    confidence = np.max(predictions)  # Get the confidence score
-    return CLASS_NAMES[predicted_index], confidence
+    return CLASS_NAMES[predicted_index]
 
 # Streamlit App Logic
 st.title("Garbage Classification with Fine-Tuned MobileNetV2")
@@ -60,9 +62,8 @@ if uploaded_file:
     # Load the trained model
     model = load_trained_model()
 
-    # Predict the class and confidence
-    prediction, confidence = predict_class(model, image)
+    # Predict the class
+    prediction = predict_class(model, image)
 
     # Display the prediction result
     st.write(f"### Predicted Class: **{prediction}**")
-    st.write(f"### Confidence: **{confidence:.2f}**")
