@@ -12,7 +12,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # Class names for prediction
 CLASS_NAMES = [
-    "biological", "brown-glass", "cardboard", "clothes",
+    "battery", "biological", "brown-glass", "cardboard", "clothes",
     "green-glass", "metal", "paper", "plastic", "shoes", "trash", "white-glass"
 ]
 
