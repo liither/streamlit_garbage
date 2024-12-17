@@ -36,7 +36,7 @@ class_labels = [
 
 # Fungsi untuk preprocessing gambar
 def preprocess_image(image):
-    img = image.resize((224, 224))  # Konsisten dengan resolusi pelatihan
+    img = image.resize((150, 150))  # Resize ke 150x150 (sesuai dengan input model)
     img_array = np.array(img, dtype=np.float32) / 255.0  # Normalisasi 0-1
     img_array = np.expand_dims(img_array, axis=0)  # Tambahkan batch dimension
     return img_array
