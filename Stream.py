@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 
 # Title of the application
-st.title("Image Classification using TFLite Model (MobileNetV2)")
+st.title("Image Classification for Waste Categories")
 
 # Load the TFLite model
 @st.cache(allow_output_mutation=True)
@@ -15,11 +15,20 @@ def load_tflite_model():
 
 interpreter = load_tflite_model()
 
-# Define class labels (Replace these with your actual class names)
+# Define class labels
 class_labels = [
-    "Class 0", "Class 1", "Class 2", "Class 3", 
-    "Class 4", "Class 5", "Class 6", "Class 7", 
-    "Class 8", "Class 9", "Class 10", "Class 11"
+    "Battery",           # Class 0
+    "Biological",        # Class 1
+    "Brown Glass",       # Class 2
+    "Cardboard",         # Class 3
+    "Clothes",           # Class 4
+    "Green Glass",       # Class 5
+    "Metal",             # Class 6
+    "Paper",             # Class 7
+    "Plastic",           # Class 8
+    "Shoes",             # Class 9
+    "Trash",             # Class 10
+    "White Glass"        # Class 11
 ]
 
 # Function to preprocess the image (resize to 150x150 as expected by the model)
@@ -65,5 +74,7 @@ if uploaded_file is not None:
     
     # Display prediction results
     st.write("Prediction Probabilities:")
-    st.write(prediction)
+    for i, prob in enumerate(prediction[0]):
+        st.write(f"{class_labels[i]}: {prob:.4f}")
+    
     st.write(f"**Predicted Class:** {predicted_class} (Confidence: {prediction[0][predicted_index]:.4f})")
