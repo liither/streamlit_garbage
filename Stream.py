@@ -36,41 +36,10 @@ class_labels = [
 
 # Fungsi untuk preprocessing gambar
 def preprocess_image(image):
-    img = image.resize((224, 224))  # Sesuaikan resolusi
+    img = image.resize((224, 224))  # Konsisten dengan resolusi pelatihan
     img_array = np.array(img, dtype=np.float32) / 255.0  # Normalisasi 0-1
     img_array = np.expand_dims(img_array, axis=0)  # Tambahkan batch dimension
     return img_array
 
 # Fungsi untuk prediksi menggunakan TFLite
-def predict_tflite(interpreter, input_data):
-    input_details = interpreter.get_input_details()
-    output_details = interpreter.get_output_details()
-    
-    # Set input tensor
-    interpreter.set_tensor(input_details[0]['index'], input_data)
-    interpreter.invoke()  # Jalankan inferensi
-    
-    # Ambil output tensor
-    output_data = interpreter.get_tensor(output_details[0]['index'])
-    return output_data
-
-# Upload gambar dari pengguna
-uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png"])
-
-if uploaded_file is not None:
-    # Tampilkan gambar
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Image", use_container_width=True)
-
-    # Preprocessing gambar
-    processed_image = preprocess_image(image)
-
-    # Prediksi menggunakan model TFLite
-    prediction = predict_tflite(interpreter, processed_image)
-
-    # Menentukan kelas dengan confidence tertinggi
-    predicted_index = np.argmax(prediction[0])
-    predicted_class = class_labels[predicted_index]
-
-    # Tampilkan hasil prediksi
-    st.write(f"### Predicted Class: {predicted_class}")
+def predict_tflite(interpreter
