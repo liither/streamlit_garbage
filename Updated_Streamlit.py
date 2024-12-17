@@ -42,9 +42,18 @@ def predict_class(model, image_array):
     """
     Predict the class of the image using the trained model.
     """
+    st.write(f"Image shape before expansion: {image_array.shape}")  # Debugging
+
+    # Ensure the image shape is (150, 150, 3)
+    if image_array.shape != (150, 150, 3):
+        raise ValueError(f"Invalid input shape: {image_array.shape}. Expected (150, 150, 3).")
+
     image_array = np.expand_dims(image_array, axis=0)  # Add batch dimension
+    st.write(f"Image shape after expansion: {image_array.shape}")  # Debugging
+
+    # Predict the class
     predictions = model.predict(image_array)
-    predicted_index = np.argmax(predictions)  # Find the class with the highest probability
+    predicted_index = np.argmax(predictions)
     return CLASS_NAMES[predicted_index]
 
 # Streamlit App Logic
@@ -62,8 +71,9 @@ if uploaded_file:
     # Load the trained model
     model = load_trained_model()
 
-    # Predict the class
-    prediction = predict_class(model, image)
-
-    # Display the prediction result
-    st.write(f"### Predicted Class: **{prediction}**")
+    try:
+        # Predict the class
+        prediction = predict_class(model, image)
+        st.write(f"### Predicted Class: **{prediction}**")
+    except ValueError as e:
+        st.error(f"Error: {e}")
