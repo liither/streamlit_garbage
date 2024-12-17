@@ -31,7 +31,7 @@ def load_trained_model():
     """
     Load the fine-tuned Keras model for garbage classification.
     """
-    model_path = "garbage_classification_model.h5"
+    model_path = "mobilenetv2_finetuned.h5"
     model = tf.keras.models.load_model(model_path)
     return model
 
