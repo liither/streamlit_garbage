@@ -17,23 +17,14 @@ interpreter = load_tflite_model()
 
 # Define class labels
 class_labels = [
-    "Battery",           # Class 0
-    "Biological",        # Class 1
-    "Brown Glass",       # Class 2
-    "Cardboard",         # Class 3
-    "Clothes",           # Class 4
-    "Green Glass",       # Class 5
-    "Metal",             # Class 6
-    "Paper",             # Class 7
-    "Plastic",           # Class 8
-    "Shoes",             # Class 9
-    "Trash",             # Class 10
-    "White Glass"        # Class 11
+    "Battery", "Biological", "Brown Glass", "Cardboard",
+    "Clothes", "Green Glass", "Metal", "Paper",
+    "Plastic", "Shoes", "Trash", "White Glass"
 ]
 
-# Function to preprocess the image (resize to 150x150 as expected by the model)
+# Function to preprocess the image
 def preprocess_image(image):
-    img = image.resize((150, 150))  # Resize to match input shape of TFLite model
+    img = image.resize((150, 150))  # Resize to 150x150
     img_array = np.array(img, dtype=np.float32)
     img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
     return img_array
@@ -42,14 +33,8 @@ def preprocess_image(image):
 def predict_tflite(interpreter, input_data):
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
-    
-    # Set input tensor
     interpreter.set_tensor(input_details[0]['index'], input_data)
-    
-    # Run inference
     interpreter.invoke()
-    
-    # Get output tensor
     output_data = interpreter.get_tensor(output_details[0]['index'])
     return output_data
 
@@ -57,24 +42,19 @@ def predict_tflite(interpreter, input_data):
 uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # Load the uploaded image
+    # Load and display the image
     image = Image.open(uploaded_file)
     st.image(image, caption="Uploaded Image", use_column_width=True)
-    st.write("Classifying...")
-
+    
     # Preprocess the image
     processed_image = preprocess_image(image)
     
-    # Make prediction using TFLite model
+    # Predict using the TFLite model
     prediction = predict_tflite(interpreter, processed_image)
     
-    # Get class with highest probability
-    predicted_index = np.argmax(prediction[0])  # Index of the highest probability
-    predicted_class = class_labels[predicted_index]  # Get the corresponding class name
+    # Determine the predicted class
+    predicted_index = np.argmax(prediction[0])  # Get the index of max probability
+    predicted_class = class_labels[predicted_index]  # Get the class name
     
-    # Display prediction results
-    st.write("Prediction Probabilities:")
-    for i, prob in enumerate(prediction[0]):
-        st.write(f"{class_labels[i]}: {prob:.4f}")
-    
-    st.write(f"**Predicted Class:** {predicted_class} (Confidence: {prediction[0][predicted_index]:.4f})")
+    # Display the predicted class
+    st.write(f"### Predicted Class: {predicted_class}")
