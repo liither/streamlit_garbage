@@ -20,11 +20,11 @@ CLASS_NAMES = [
 def preprocess_image(uploaded_file):
     """
     Preprocess the uploaded image for prediction.
-    Resize the image to (224, 224) and normalize pixel values.
+    Resize the image to (224, 224) and normalize pixel values to [-1, 1].
     """
     image = Image.open(uploaded_file)
     image = image.resize((224, 224))  # Resize to match the model input
-    image_array = np.array(image) / 255.0  # Normalize to [0, 1]
+    image_array = np.array(image) / 127.5 - 1.0  # Normalize to [-1, 1]
     return image_array
 
 # Function to load the trained model
@@ -35,7 +35,6 @@ def load_trained_model():
     """
     model_path = "mobilenetv2_finetuned.h5"
     model = tf.keras.models.load_model(model_path)
-    model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])  # Compile model
     return model
 
 # Function to predict the class of an image
