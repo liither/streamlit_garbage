@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import streamlit as st
 import tensorflow as tf
 import numpy as np
@@ -21,9 +15,9 @@ def load_tflite_model():
 
 interpreter = load_tflite_model()
 
-# Function to preprocess the image
+# Function to preprocess the image (resize to 150x150 as expected by the model)
 def preprocess_image(image):
-    img = image.resize((224, 224))
+    img = image.resize((150, 150))  # Resize to match input shape of TFLite model
     img_array = np.array(img, dtype=np.float32)
     img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
     return img_array
@@ -47,10 +41,11 @@ def predict_tflite(interpreter, input_data):
 uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
+    # Load the uploaded image
     image = Image.open(uploaded_file)
     st.image(image, caption="Uploaded Image", use_column_width=True)
     st.write("Classifying...")
-    
+
     # Preprocess the image
     processed_image = preprocess_image(image)
     
@@ -60,4 +55,3 @@ if uploaded_file is not None:
     # Display prediction results
     st.write("Prediction Probabilities:")
     st.write(prediction)
-
