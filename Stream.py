@@ -6,8 +6,8 @@ from PIL import Image
 # Title of the application
 st.title("Image Classification for Waste Categories")
 
-# Load the TFLite model
-@st.cache(allow_output_mutation=True)
+# Load the TFLite model using st.cache_resource
+@st.cache_resource
 def load_tflite_model():
     interpreter = tf.lite.Interpreter(model_path="model_quantized.tflite")  # Path to your TFLite model
     interpreter.allocate_tensors()
@@ -44,7 +44,7 @@ uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png
 if uploaded_file is not None:
     # Load and display the image
     image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Image", use_column_width=True)
+    st.image(image, caption="Uploaded Image", use_container_width=True)
     
     # Preprocess the image
     processed_image = preprocess_image(image)
