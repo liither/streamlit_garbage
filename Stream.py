@@ -15,6 +15,13 @@ def load_tflite_model():
 
 interpreter = load_tflite_model()
 
+# Define class labels (Replace these with your actual class names)
+class_labels = [
+    "Class 0", "Class 1", "Class 2", "Class 3", 
+    "Class 4", "Class 5", "Class 6", "Class 7", 
+    "Class 8", "Class 9", "Class 10", "Class 11"
+]
+
 # Function to preprocess the image (resize to 150x150 as expected by the model)
 def preprocess_image(image):
     img = image.resize((150, 150))  # Resize to match input shape of TFLite model
@@ -52,6 +59,11 @@ if uploaded_file is not None:
     # Make prediction using TFLite model
     prediction = predict_tflite(interpreter, processed_image)
     
+    # Get class with highest probability
+    predicted_index = np.argmax(prediction[0])  # Index of the highest probability
+    predicted_class = class_labels[predicted_index]  # Get the corresponding class name
+    
     # Display prediction results
     st.write("Prediction Probabilities:")
     st.write(prediction)
+    st.write(f"**Predicted Class:** {predicted_class} (Confidence: {prediction[0][predicted_index]:.4f})")
