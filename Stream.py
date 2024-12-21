@@ -4,13 +4,10 @@ import numpy as np
 from PIL import Image
 import os
 
-# Title of the application
 st.title("Image Classification for Waste Categories")
 
-# Path ke model TFLite
 MODEL_PATH = "model_quantized.tflite"
 
-# Fungsi untuk memuat model TFLite
 @st.cache_resource
 def load_tflite_model():
     if not os.path.isfile(MODEL_PATH):
@@ -27,52 +24,42 @@ def load_tflite_model():
 
 interpreter = load_tflite_model()
 
-# Label kelas
 class_labels = [
     "Battery", "Biological", "Brown Glass", "Cardboard",
     "Clothes", "Green Glass", "Metal", "Paper",
     "Plastic", "Shoes", "Trash", "White Glass"
 ]
 
-# Fungsi untuk preprocessing gambar
 def preprocess_image(image):
     img = image.resize((150, 150))  # Resize ke 150x150 (sesuai dengan input model)
     img_array = np.array(img, dtype=np.float32) / 255.0  # Normalisasi 0-1
     img_array = np.expand_dims(img_array, axis=0)  # Tambahkan batch dimension
     return img_array
 
-# Fungsi untuk prediksi menggunakan TFLite
 def predict_tflite(interpreter, input_data):
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
     
-    # Set input tensor
     interpreter.set_tensor(input_details[0]['index'], input_data)
     interpreter.invoke()  # Jalankan inferensi
     
-    # Ambil output tensor
     output_data = interpreter.get_tensor(output_details[0]['index'])
     return output_data
 
-# Upload gambar dari pengguna
 uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # Tampilkan gambar
+
     image = Image.open(uploaded_file)
     st.image(image, caption="Uploaded Image", use_container_width=True)
 
-    # Preprocessing gambar
     processed_image = preprocess_image(image)
 
-    # Prediksi menggunakan model TFLite
     prediction = predict_tflite(interpreter, processed_image)
 
-    # Menentukan kelas dengan confidence tertinggi
     predicted_index = np.argmax(prediction[0])
     predicted_class = class_labels[predicted_index]
 
-    # Tampilkan hasil prediksi
     st.write(f"### Predicted Class: {predicted_class}")
     st.write("Prediction Probabilities:")
     for i, prob in enumerate(prediction[0]):
